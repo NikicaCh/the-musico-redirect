@@ -27,7 +27,7 @@ const port = process.env.PORT || 3001;
 
 let redirect_uri = 
   process.env.REDIRECT_URI || 
-  'http://localhost:3001/callback'
+  'https://the-musico-redirect.herokuapp.com/callback'
 let code = ""
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -74,7 +74,7 @@ app.get('/callback', function(req, res) {
       access_token = body.access_token;
       refresh_token = body.refresh_token;
       genius = process.env.GENIUS_API_KEY;
-      let uri = "http://localhost:3000";
+      let uri = "https://front-to-redirect.herokuapp.com/";
       res.cookie("access",access_token)
       res.cookie("genius", genius)
       let tokens = {
