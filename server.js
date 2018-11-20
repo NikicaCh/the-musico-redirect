@@ -23,7 +23,7 @@ let genius = "";
 
 
 const app = express();
-const port = process.env.port || 3001;
+const port = process.env.PORT || 3001;
 
 let redirect_uri = 
   process.env.REDIRECT_URI || 
