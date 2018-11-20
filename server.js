@@ -81,8 +81,7 @@ app.get('/callback', function(req, res) {
           spotify: access_token,
           genius
       }
-      res.send(tokens)
-      res.redirect(200, uri)
+      res.redirect(uri)
     })
 })
 
