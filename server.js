@@ -9,7 +9,6 @@ let querystring = require('querystring')
 let cookieParser = require("cookie-parser")
 // use it before all route definitions
 // require('dotenv').config()
-let flash = require('connect-flash');
 
 
 let url = "";
@@ -42,7 +41,6 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers",  "Content-Type");
     next();
 });
-app.use(flash());
 // const staticFiles = express.static(path.join(__dirname, '../../client/build'))
 // // pass the static files (react app) to the express app. 
 // app.use(staticFiles)
@@ -83,8 +81,8 @@ app.get('/callback', function(req, res) {
           spotify: access_token,
           genius
       }
-      req.flash("tokens", access_token)
-      res.redirect(uri)
+      res.send(tokens)
+      res.redirect(200, uri)
     })
 })
 
