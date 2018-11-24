@@ -77,7 +77,7 @@ app.get('/login', function(req, res) {
           access_token = body.access_token;
           refresh_token = body.refresh_token;
           genius = process.env.GENIUS_API_KEY;
-          let uri = "http://localhost:3000";
+          let uri = "https://the-musico.herokuapp.com/";
           res.cookie("access",access_token)
           console.log(access_token)
           res.cookie("genius", genius)
