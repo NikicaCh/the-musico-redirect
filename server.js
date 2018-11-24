@@ -3,12 +3,13 @@ let scrapeIt = require("scrape-it")
 let bodyParser = require('body-parser')
 let request = require('request')
 let querystring = require('querystring')
-// let Axios = require("axios")
+let Axios = require("axios")
 // let fetch = require("node-fetch")
-// let $ = require("jquery")
+const $ = require('jquery');
 let cookieParser = require("cookie-parser")
 // use it before all route definitions
 // require('dotenv').config()
+const fetch = require("node-fetch")
 
 
 let url = "";
@@ -23,11 +24,11 @@ let genius = "";
 
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 8888;
 
 let redirect_uri = 
   process.env.REDIRECT_URI || 
-  'https://the-musico-redirect.herokuapp.com/callback'
+  'http://localhost:8888/callback'
 let code = ""
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -45,45 +46,45 @@ app.use(function(req, res, next) {
 // // pass the static files (react app) to the express app. 
 // app.use(staticFiles)
 
+let scopes = "user-modify-playback-state user-read-currently-playing user-library-modify streaming user-read-email user-follow-read user-read-private user-library-read playlist-read-private user-read-playback-state app-remote-control playlist-read-collaborative user-read-recently-played user-read-birthdate playlist-modify-public playlist-modify-private user-follow-modify user-top-read";
+
 app.get('/login', function(req, res) {
-res.redirect('https://accounts.spotify.com/authorize?' +
-    querystring.stringify({
-    response_type: 'code',
-    client_id: process.env.SPOTIFY_CLIENT_ID,
-    scope: "user-modify-playback-state user-read-currently-playing user-library-modify streaming user-read-email user-follow-read user-read-private user-library-read playlist-read-private user-read-playback-state app-remote-control playlist-read-collaborative user-read-recently-played user-read-birthdate playlist-modify-public playlist-modify-private user-follow-modify user-top-read",
-    redirect_uri
-    }))
-})
-app.get('/callback', function(req, res) {
-    code = req.query.code || null
-    let authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      form: {
-        code: code,
-        redirect_uri,
-        grant_type: 'authorization_code'
-      },
-      headers: {
-        'Authorization': 'Basic ' + (new Buffer(
-          process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET
-        ).toString('base64'))
-      },
-      json: true
-    }
-    request.post(authOptions, function(error, response, body) {
-      access_token = body.access_token;
-      refresh_token = body.refresh_token;
-      genius = process.env.GENIUS_API_KEY;
-      let uri = "https://front-to-redirect.herokuapp.com/";
-      res.cookie("access",access_token)
-      res.cookie("genius", genius)
-      let tokens = {
-          spotify: access_token,
-          genius
-      }
-      res.redirect(uri)
+    res.redirect('https://accounts.spotify.com/authorize?' +
+        querystring.stringify({
+        response_type: 'code',
+        client_id: process.env.SPOTIFY_CLIENT_ID,
+        scope: "user-modify-playback-state user-read-currently-playing user-library-modify streaming user-read-email user-follow-read user-read-private user-library-read playlist-read-private user-read-playback-state app-remote-control playlist-read-collaborative user-read-recently-played user-read-birthdate playlist-modify-public playlist-modify-private user-follow-modify user-top-read",
+        redirect_uri
+        }))
     })
-})
+    app.get('/callback', function(req, res) {
+        code = req.query.code || null
+        let authOptions = {
+          url: 'https://accounts.spotify.com/api/token',
+          form: {
+            code: code,
+            redirect_uri,
+            grant_type: 'authorization_code'
+          },
+          headers: {
+            'Authorization': 'Basic ' + (new Buffer(
+              process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET
+            ).toString('base64'))
+          },
+          json: true
+        }
+        request.post(authOptions, function(error, response, body) {
+          access_token = body.access_token;
+          refresh_token = body.refresh_token;
+          genius = process.env.GENIUS_API_KEY;
+          let uri = "https://to-redi.herokuapp.com/";
+          res.cookie("access",access_token)
+          console.log(access_token)
+          res.cookie("genius", genius)
+          res.redirect(uri + "?spotify=" + access_token + "&genius=" + genius)
+        })
+    })
+
 
 
 app.post('/', (req, res) => {
