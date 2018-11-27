@@ -26,9 +26,9 @@ let genius = "";
 const app = express();
 const port = process.env.PORT || 8888;
 
-let redirect_uri = 
-  process.env.REDIRECT_URI || 
-  'https://musico-redirect.herokuapp.com/callback'
+const urlDevelopment = "http://localhost:8888/callback";
+const urlProduction = "https://musico-redirect.herokuapp.com/callback";
+(process.env.NODE_ENV === "production") ? redirect_uri = urlProduction : redirect_uri = urlDevelopment;
 let code = ""
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -77,7 +77,7 @@ app.get('/login', function(req, res) {
           access_token = body.access_token;
           refresh_token = body.refresh_token;
           genius = process.env.GENIUS_API_KEY;
-          let uri = "https://the-musico.herokuapp.com/";
+          (process.env.NODE_ENV === "production") ? uri = "https://the-musico.herokuapp.com/" : uri = "http://localhost:3000/";
           res.cookie("access",access_token)
           console.log(access_token)
           res.cookie("genius", genius)
